@@ -38,7 +38,7 @@ function menu() {
 }
 
 function viewProductsForSale() {
-  connection.query("SELECT ItemID, ProductName, Price, StockQuantity FROM Products", function(err, res) {
+  connection.query("SELECT ItemID, ProductName, Price, StockQuantity FROM products", function(err, res) {
     for (var i=0; i<res.length; i++) {
       console.log(res[i].ItemID + '.) ' + res[i].ProductName + ' ' + res[i].Price + ' ' + res[i].StockQuantity);
     }
@@ -47,7 +47,7 @@ function viewProductsForSale() {
 }
 
 function viewLowInventory() {
-  connection.query("SELECT ItemID, ProductName, StockQuantity FROM Products WHERE StockQuantity < 5", function(err, res) {
+  connection.query("SELECT ItemID, ProductName, StockQuantity FROM products WHERE StockQuantity < 5", function(err, res) {
     for (var i=0; i<res.length; i++) {
       console.log(res[i].ItemID + '.) ' + res[i].ProductName + ' ' + res[i].StockQuantity);
     }
@@ -66,14 +66,14 @@ function addToInventory() {
     message: 'How many of that item would you like to add?'
   }];
   inquirer.prompt(questions).then(function(answers) {
-    connection.query("SELECT * FROM Products WHERE ItemID = ?", [answers.id], function(err, res) {
+    connection.query("SELECT * FROM products WHERE ItemID = ?", [answers.id], function(err, res) {
         if (err) throw err;
 
         var currentQuantity = res[0].StockQuantity;
         var newQuantity = currentQuantity + parseInt(answers.quantity);
         var productName = res[0].ProductName;
 
-        connection.query("UPDATE Products SET ? WHERE ?", [{StockQuantity: newQuantity}, {ItemID: answers.id}], function(err, res) {
+        connection.query("UPDATE products SET ? WHERE ?", [{StockQuantity: newQuantity}, {ItemID: answers.id}], function(err, res) {
           if (err) throw err;
 
           console.log("Update successful!");
@@ -106,7 +106,7 @@ function addNewProduct() {
     var department = answers.department;
     var price = answers.price;
     var quantity = answers.quantity;
-    connection.query("INSERT INTO Products SET ?", {ProductName: name, DepartmentName: department, Price: price, StockQuantity: quantity}, function(err, res) {
+    connection.query("INSERT INTO products SET ?", {ProductName: name, DepartmentName: department, Price: price, StockQuantity: quantity}, function(err, res) {
       if (err) throw err;
 
       console.log("Item added!");
